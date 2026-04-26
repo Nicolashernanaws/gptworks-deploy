@@ -1760,13 +1760,31 @@
         }
         .video-mockup-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.6); }
     </style>
-    <!-- Google tag (gtag.js) -->
+    <!-- Google tag base -->
     <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18119954778"></script>
     <script>
       window.dataLayer = window.dataLayer || [];
       function gtag(){dataLayer.push(arguments);}
       gtag('js', new Date());
       gtag('config', 'AW-18119954778');
+    </script>
+
+    <!-- Evento conversión WhatsApp -->
+    <script>
+    function gtag_report_conversion(url) {
+      var callback = function () {
+        if (typeof(url) != 'undefined') {
+          window.location = url;
+        }
+      };
+      gtag('event', 'conversion', {
+          'send_to': 'AW-18119954778/Y1kvCPSt4aIcENqiosBD',
+          'value': 1.0,
+          'currency': 'ARS',
+          'event_callback': callback
+      });
+      return false;
+    }
     </script>
 </head>
 <body>
@@ -1790,7 +1808,7 @@
                 <li><a href="#faq">FAQ</a></li>
             </ul>
             <div class="nav-buttons">
-                <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="btn-demo">Demo Gratis</a>
+                <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" onclick="gtag_report_conversion(this.href); return false;" class="btn-demo">Demo Gratis</a>
             </div>
             <button class="hamburger" id="hamburger">
                 <span></span>
@@ -1802,7 +1820,7 @@
             <a href="#features">Características</a>
             <a href="#pricing">Precios</a>
             <a href="#faq">FAQ</a>
-            <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="btn-demo">Demo Gratis</a>
+            <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" onclick="gtag_report_conversion(this.href); return false;" class="btn-demo">Demo Gratis</a>
         </div>
     </nav>
 
@@ -1827,8 +1845,8 @@
                 <p class="hero-subtitle">Incluso a las 2 AM. <strong>Luna atiende, cotiza y cobra por vos</strong> — sin que pierdas una sola consulta. Tu recepcionista de IA que nunca duerme.</p>
 
                 <div class="hero-cta" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
-                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="btn-demo" style="font-size: 16px; padding: 14px 32px;">Hablar con Luna Ahora</a>
-                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20la%20demo%20de%2090%20segundos" style="display: inline-block; padding: 14px 32px; border: 2px solid #2563EB; color: #2563EB; border-radius: 8px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.3s;">Ver demo de 90 seg</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" onclick="gtag_report_conversion(this.href); return false;" class="btn-demo" style="font-size: 16px; padding: 14px 32px;">Hablar con Luna Ahora</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20la%20demo%20de%2090%20segundos" onclick="gtag_report_conversion(this.href); return false;" style="display: inline-block; padding: 14px 32px; border: 2px solid #2563EB; color: #2563EB; border-radius: 8px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.3s;">Ver demo de 90 seg</a>
                 </div>
 
                 <div class="live-metric" id="liveMetric">
@@ -2016,7 +2034,7 @@
                     <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
                         <span style="font-size: 13px; color: #6b7280;">Córdoba, Argentina</span>
                         <span style="font-size: 13px; color: #6b7280;">·</span>
-                        <a href="https://wa.me/5493541267595?text=Hola%20Nicolás%2C%20quiero%20saber%20más%20de%20Luna" style="font-size: 13px; color: #2563EB; text-decoration: none; font-weight: 600;">Hablá directo conmigo →</a>
+                        <a href="https://wa.me/5493541267595?text=Hola%20Nicolás%2C%20quiero%20saber%20más%20de%20Luna" onclick="gtag_report_conversion(this.href); return false;" style="font-size: 13px; color: #2563EB; text-decoration: none; font-weight: 600;">Hablá directo conmigo →</a>
                     </div>
                 </div>
             </div>
@@ -2259,7 +2277,7 @@
                     <div class="result-label">Estás perdiendo cada mes:</div>
                     <div class="result-value">$<span id="resultValue">270000</span></div>
                     <div class="result-subtext" id="paybackText" style="margin-bottom: 16px;">Luna se paga sola en menos de una semana con estas cifras</div>
-                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" style="display: inline-block; background: #10b981; color: white; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px; text-decoration: none; transition: all 0.3s;">Recuperá esto ahora →</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" onclick="gtag_report_conversion(this.href); return false;" style="display: inline-block; background: #10b981; color: white; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px; text-decoration: none; transition: all 0.3s;">Recuperá esto ahora →</a>
                 </div>
             </div>
         </div>
@@ -2352,7 +2370,7 @@
                         <p style="color: #374151; font-size: 16px; line-height: 1.75; margin-bottom: 16px;">Luna nació de esa bronca. Es la herramienta que a nosotros nos hubiera cambiado el mes. Responde en segundos, cotiza, y avisa a los dueños cuando hay algo importante. Nada más. Sin magia, sin promesas raras.</p>
                         <p style="color: #374151; font-size: 16px; line-height: 1.75; margin-bottom: 16px;">Hoy la estamos probando con los primeros hoteles de Córdoba. Si querés ser uno de ellos, escribime directo y charlamos sin compromiso.</p>
                         <p style="color: #6b7280; font-size: 15px; margin-bottom: 24px;">— <strong style="color: #1f2937;">Nicolás Cortés</strong>, fundador de GPT Works</p>
-                        <a href="https://wa.me/5493541267595?text=Hola%20Nicol%C3%A1s%2C%20vi%20la%20landing%20y%20quiero%20saber%20m%C3%A1s%20de%20Luna" style="display: inline-flex; align-items: center; gap: 10px; background: #2563eb; color: white; padding: 14px 26px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 15px; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: all 0.2s;">
+                        <a href="https://wa.me/5493541267595?text=Hola%20Nicol%C3%A1s%2C%20vi%20la%20landing%20y%20quiero%20saber%20m%C3%A1s%20de%20Luna" onclick="gtag_report_conversion(this.href); return false;" style="display: inline-flex; align-items: center; gap: 10px; background: #2563eb; color: white; padding: 14px 26px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 15px; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: all 0.2s;">
                             <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
                             Escribime por WhatsApp
                         </a>
@@ -2475,7 +2493,7 @@
                             <span>Email support</span>
                         </li>
                     </ul>
-                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="pricing-cta secondary">Empezar ahora</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" onclick="gtag_report_conversion(this.href); return false;" class="pricing-cta secondary">Empezar ahora</a>
                     <div class="pricing-tagline">Sin tarjeta requerida</div>
                     <div class="pricing-guarantee-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 30 días de prueba sin riesgo</div>
                 </div>
@@ -2525,7 +2543,7 @@
                             <span>Soporte prioritario</span>
                         </li>
                     </ul>
-                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="pricing-cta primary">Empezar ahora</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" onclick="gtag_report_conversion(this.href); return false;" class="pricing-cta primary">Empezar ahora</a>
                     <div class="pricing-tagline">La opción más elegida</div>
                     <div class="pricing-guarantee-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 30 días de prueba sin riesgo</div>
                 </div>
@@ -2573,7 +2591,7 @@
                             <span>Onboarding personalizado</span>
                         </li>
                     </ul>
-                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="pricing-cta secondary">Contactar ventas</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" onclick="gtag_report_conversion(this.href); return false;" class="pricing-cta secondary">Contactar ventas</a>
                     <div class="pricing-tagline">Solución enterprise</div>
                     <div class="pricing-guarantee-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 30 días de prueba sin riesgo</div>
                 </div>
@@ -2715,8 +2733,8 @@
                 </div>
 
                 <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
-                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="final-cta-button">Hablar con Luna Ahora</a>
-                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%2090%20segundos%20de%20Luna" style="display: inline-block; padding: 16px 32px; border: 2px solid rgba(255,255,255,0.3); color: white; border-radius: 12px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.3s;">Ver demo de 90 segundos</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" onclick="gtag_report_conversion(this.href); return false;" class="final-cta-button">Hablar con Luna Ahora</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%2090%20segundos%20de%20Luna" onclick="gtag_report_conversion(this.href); return false;" style="display: inline-block; padding: 16px 32px; border: 2px solid rgba(255,255,255,0.3); color: white; border-radius: 12px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.3s;">Ver demo de 90 segundos</a>
                 </div>
 
                 <div class="final-cta-trust">
