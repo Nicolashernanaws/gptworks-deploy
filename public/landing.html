@@ -1,0 +1,2752 @@
+<!DOCTYPE html>
+<html lang="es">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>Luna - IA para Hoteles | Automación de Reservas y Atención al Cliente</title>
+    <link rel="stylesheet" href="https://fonts.googleapis.com/css2?family=Inter:wght@400;500;600;700;800&display=swap">
+    <style>
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        html {
+            scroll-behavior: smooth;
+        }
+
+        body {
+            font-family: 'Inter', sans-serif;
+            color: #1f2937;
+            background-color: #ffffff;
+            line-height: 1.6;
+        }
+
+        .container {
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        /* Navigation */
+        nav {
+            position: fixed;
+            top: 0;
+            left: 0;
+            right: 0;
+            z-index: 1000;
+            background-color: transparent;
+            transition: all 0.3s ease;
+            padding: 16px 0;
+        }
+
+        nav.scrolled {
+            background-color: rgba(255, 255, 255, 0.98);
+            border-bottom: 1px solid #e5e7eb;
+            box-shadow: 0 2px 8px rgba(0, 0, 0, 0.08);
+        }
+
+        .nav-content {
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            max-width: 1200px;
+            margin: 0 auto;
+            padding: 0 20px;
+        }
+
+        .nav-logo {
+            font-size: 20px;
+            font-weight: 800;
+            background: linear-gradient(135deg, #2563EB, #1d4ed8);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+            text-decoration: none;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .nav-links {
+            display: flex;
+            gap: 40px;
+            align-items: center;
+            list-style: none;
+        }
+
+        .nav-links a {
+            color: #1f2937;
+            text-decoration: none;
+            font-weight: 500;
+            font-size: 14px;
+            transition: color 0.3s ease;
+        }
+
+        .nav-links a:hover {
+            color: #2563EB;
+        }
+
+        .nav-buttons {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+        }
+
+        .btn-demo {
+            background-color: #2563EB;
+            color: white;
+            padding: 10px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            transition: all 0.3s ease;
+            border: none;
+            cursor: pointer;
+        }
+
+        .btn-demo:hover {
+            background-color: #1d4ed8;
+            box-shadow: 0 4px 12px rgba(37, 99, 235, 0.3);
+        }
+
+        .hamburger {
+            display: none;
+            flex-direction: column;
+            gap: 5px;
+            cursor: pointer;
+            background: none;
+            border: none;
+            padding: 8px;
+        }
+
+        .hamburger span {
+            width: 24px;
+            height: 2px;
+            background-color: #1f2937;
+            border-radius: 2px;
+            transition: all 0.3s ease;
+        }
+
+        .hamburger.active span:nth-child(1) {
+            transform: rotate(45deg) translate(8px, 8px);
+        }
+
+        .hamburger.active span:nth-child(2) {
+            opacity: 0;
+        }
+
+        .hamburger.active span:nth-child(3) {
+            transform: rotate(-45deg) translate(8px, -8px);
+        }
+
+        .mobile-menu {
+            display: none;
+            position: absolute;
+            top: 100%;
+            left: 0;
+            right: 0;
+            background-color: white;
+            border-bottom: 1px solid #e5e7eb;
+            flex-direction: column;
+            gap: 20px;
+            padding: 20px;
+            z-index: 999;
+        }
+
+        .mobile-menu.active {
+            display: flex;
+        }
+
+        /* Hero Section */
+        .hero {
+            padding-top: 120px;
+            padding-bottom: 80px;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .hero-content {
+            text-align: center;
+        }
+
+        .badge {
+            display: inline-flex;
+            align-items: center;
+            gap: 12px;
+            background-color: #f0f9ff;
+            color: #0284c7;
+            padding: 10px 20px;
+            border-radius: 24px;
+            font-size: 13px;
+            font-weight: 600;
+            margin-bottom: 32px;
+            border: 1px solid #e0f2fe;
+        }
+
+        .badge-icons {
+            display: flex;
+            gap: 8px;
+            align-items: center;
+        }
+
+        .badge-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+        }
+
+        h1 {
+            font-size: 64px;
+            font-weight: 800;
+            line-height: 1.1;
+            margin-bottom: 24px;
+            color: #0f172a;
+        }
+
+        .hero-subtitle {
+            font-size: 18px;
+            color: #6b7280;
+            line-height: 1.6;
+            max-width: 800px;
+            margin: 0 auto 48px;
+        }
+
+        .hero-subtitle strong {
+            color: #1f2937;
+            font-weight: 700;
+        }
+
+        .hero-cta {
+            margin-bottom: 80px;
+        }
+
+        .live-metric {
+            display: inline-block;
+            background: #ecf0f1;
+            padding: 8px 14px;
+            border-radius: 20px;
+            font-size: 12px;
+            font-weight: 600;
+            color: #059669;
+            margin-bottom: 24px;
+            animation: pulse-green 2s infinite;
+        }
+
+        @keyframes pulse-green {
+            0%, 100% { opacity: 1; }
+            50% { opacity: 0.7; }
+        }
+
+        /* Dashboard Mockup */
+        .dashboard-mockup {
+            max-width: 900px;
+            margin: 0 auto;
+            background: white;
+            border-radius: 16px;
+            box-shadow: 0 25px 80px rgba(0, 0, 0, 0.12);
+            overflow: hidden;
+            animation: slideUp 0.8s ease-out;
+            border: 1px solid #f3f4f6;
+        }
+
+        @keyframes slideUp {
+            from {
+                opacity: 0;
+                transform: translateY(40px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* macOS Window Chrome */
+        .window-chrome {
+            background: linear-gradient(180deg, #f9fafb, #f3f4f6);
+            padding: 12px 16px;
+            display: flex;
+            gap: 8px;
+            border-bottom: 1px solid #e5e7eb;
+        }
+
+        .chrome-dot {
+            width: 12px;
+            height: 12px;
+            border-radius: 50%;
+            cursor: pointer;
+        }
+
+        .chrome-dot.red { background-color: #ff5f57; }
+        .chrome-dot.yellow { background-color: #febc2e; }
+        .chrome-dot.green { background-color: #28c940; }
+
+        .dashboard-container {
+            display: flex;
+            height: 500px;
+            background: white;
+        }
+
+        .dashboard-sidebar {
+            width: 220px;
+            background-color: #f8f9fa;
+            border-right: 1px solid #e5e7eb;
+            padding: 20px;
+            overflow-y: auto;
+        }
+
+        .sidebar-logo {
+            font-size: 11px;
+            font-weight: 800;
+            color: #2563EB;
+            margin-bottom: 24px;
+            letter-spacing: 1px;
+        }
+
+        .sidebar-search {
+            width: 100%;
+            padding: 8px 12px;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            font-size: 12px;
+            margin-bottom: 20px;
+            background-color: white;
+        }
+
+        .sidebar-nav {
+            list-style: none;
+        }
+
+        .sidebar-nav-item {
+            padding: 12px 12px;
+            margin-bottom: 8px;
+            border-radius: 8px;
+            font-size: 12px;
+            color: #6b7280;
+            cursor: pointer;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            transition: all 0.2s;
+        }
+
+        .sidebar-nav-item:hover {
+            background-color: #eff6ff;
+            color: #2563EB;
+        }
+
+        .sidebar-nav-item.active {
+            background-color: #dbeafe;
+            color: #2563EB;
+            font-weight: 600;
+        }
+
+        .sidebar-nav-icon {
+            width: 16px;
+            height: 16px;
+            flex-shrink: 0;
+        }
+
+        .dashboard-main {
+            flex: 1;
+            display: flex;
+            flex-direction: column;
+        }
+
+        .dashboard-header {
+            padding: 16px 24px;
+            border-bottom: 1px solid #e5e7eb;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 500;
+        }
+
+        .status-dot {
+            width: 8px;
+            height: 8px;
+            background-color: #10b981;
+            border-radius: 50%;
+        }
+
+        .chat-area {
+            flex: 1;
+            padding: 20px;
+            overflow-y: auto;
+            display: flex;
+            flex-direction: column;
+            gap: 12px;
+            background-color: #fafbfc;
+        }
+
+        .chat-message {
+            display: flex;
+            font-size: 13px;
+            line-height: 1.5;
+            max-width: 70%;
+            padding: 10px 14px;
+            border-radius: 12px;
+            word-wrap: break-word;
+        }
+
+        .chat-message.guest {
+            align-self: flex-end;
+            background-color: #e5e7eb;
+            color: #1f2937;
+            margin-right: 0;
+        }
+
+        .chat-message.luna {
+            align-self: flex-start;
+            background: linear-gradient(135deg, #2563EB, #1d4ed8);
+            color: white;
+        }
+
+        .room-card-inline {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            font-size: 12px;
+            color: #6b7280;
+            margin-top: 8px;
+            max-width: 100%;
+        }
+
+        .room-card-inline strong {
+            color: #1f2937;
+            display: block;
+            margin-bottom: 4px;
+        }
+
+        .payment-button-inline {
+            background: linear-gradient(135deg, #2563EB, #1d4ed8);
+            color: white;
+            padding: 8px 12px;
+            border-radius: 6px;
+            font-size: 12px;
+            font-weight: 600;
+            display: inline-block;
+            margin-top: 8px;
+            border: none;
+            cursor: pointer;
+        }
+
+        .chat-input-area {
+            padding: 12px 20px;
+            border-top: 1px solid #e5e7eb;
+            background-color: white;
+            font-size: 12px;
+            color: #9ca3af;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .typing-indicator {
+            display: flex;
+            gap: 4px;
+        }
+
+        .typing-dot {
+            width: 6px;
+            height: 6px;
+            background-color: #9ca3af;
+            border-radius: 50%;
+            animation: typing 1.4s infinite;
+        }
+
+        .typing-dot:nth-child(2) {
+            animation-delay: 0.2s;
+        }
+
+        .typing-dot:nth-child(3) {
+            animation-delay: 0.4s;
+        }
+
+        @keyframes typing {
+            0%, 60%, 100% { opacity: 0.5; transform: translateY(0); }
+            30% { opacity: 1; transform: translateY(-10px); }
+        }
+
+        .dashboard-right-panel {
+            width: 200px;
+            background-color: #fafbfc;
+            border-left: 1px solid #e5e7eb;
+            padding: 16px;
+            overflow-y: auto;
+        }
+
+        .right-panel-header {
+            font-size: 12px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 12px;
+        }
+
+        .stat-card-mini {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 8px;
+            padding: 12px;
+            margin-bottom: 8px;
+            font-size: 11px;
+        }
+
+        .stat-value {
+            font-size: 14px;
+            font-weight: 700;
+            color: #2563EB;
+            margin-bottom: 2px;
+        }
+
+        .stat-label {
+            color: #6b7280;
+            font-size: 10px;
+        }
+
+        @media (max-width: 768px) {
+            .dashboard-mockup {
+                margin: 0 -20px;
+                border-radius: 0;
+            }
+
+            .dashboard-container {
+                height: 400px;
+            }
+
+            .dashboard-sidebar,
+            .dashboard-right-panel {
+                display: none;
+            }
+
+            .chat-message {
+                max-width: 85%;
+            }
+        }
+
+        /* Trust Strip */
+        .trust-strip {
+            background-color: #f9fafb;
+            padding: 48px 0;
+            overflow: hidden;
+            border-top: 1px solid #f3f4f6;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .trust-title {
+            text-align: center;
+            font-size: 14px;
+            font-weight: 600;
+            color: #6b7280;
+            margin-bottom: 32px;
+        }
+
+        .marquee {
+            overflow: hidden;
+        }
+
+        .marquee-content {
+            display: flex;
+            gap: 40px;
+            animation: scroll 30s linear infinite;
+            width: max-content;
+        }
+
+        .marquee-content:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scroll {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .marquee-item {
+            padding: 8px 12px;
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 20px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2937;
+            white-space: nowrap;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .marquee-icon {
+            width: 16px;
+            height: 16px;
+        }
+
+        /* Video Demo Section */
+        .video-section {
+            padding: 80px 0;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .video-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .video-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .video-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+        }
+
+        .video-container {
+            max-width: 800px;
+            margin: 0 auto;
+            position: relative;
+            background: linear-gradient(135deg, #1f2937, #111827);
+            border-radius: 16px;
+            overflow: hidden;
+            box-shadow: 0 20px 60px rgba(0, 0, 0, 0.15);
+            aspect-ratio: 16 / 9;
+            cursor: pointer;
+        }
+
+        .video-placeholder {
+            width: 100%;
+            height: 100%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            position: relative;
+            opacity: 0.8;
+        }
+
+        .play-button {
+            width: 80px;
+            height: 80px;
+            background-color: rgba(255, 255, 255, 0.3);
+            border-radius: 50%;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            position: relative;
+            z-index: 10;
+        }
+
+        .video-container:hover .play-button {
+            background-color: rgba(255, 255, 255, 0.5);
+            transform: scale(1.1);
+        }
+
+        .play-button::before {
+            content: '';
+            width: 0;
+            height: 0;
+            border-left: 30px solid white;
+            border-top: 20px solid transparent;
+            border-bottom: 20px solid transparent;
+            margin-left: 6px;
+        }
+
+        .video-credit {
+            text-align: center;
+            margin-top: 20px;
+            font-size: 13px;
+            color: #6b7280;
+        }
+
+        .video-credit a {
+            color: #2563EB;
+            text-decoration: none;
+            font-weight: 600;
+        }
+
+        /* Pain Section */
+        .pain-section {
+            padding: 80px 0;
+            background-color: #fafbfc;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .section-header {
+            text-align: center;
+            margin-bottom: 48px;
+        }
+
+        .section-title {
+            font-size: 42px;
+            font-weight: 800;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .section-subtitle {
+            font-size: 16px;
+            color: #6b7280;
+        }
+
+        .pain-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(240px, 1fr));
+            gap: 28px;
+        }
+
+        .pain-card {
+            background: white;
+            padding: 28px;
+            border-radius: 12px;
+            border: 1px solid #e5e7eb;
+            text-align: center;
+            transition: all 0.3s ease;
+        }
+
+        .pain-card:hover {
+            border-color: #f87171;
+            box-shadow: 0 8px 24px rgba(248, 113, 113, 0.1);
+        }
+
+        .pain-card-icon {
+            width: 56px;
+            height: 56px;
+            background-color: #fee2e2;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin: 0 auto 16px;
+            font-size: 24px;
+        }
+
+        .pain-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #1f2937;
+            margin-bottom: 8px;
+        }
+
+        .pain-card p {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Before/After Section */
+        .before-after {
+            padding: 80px 0;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .before-after-grid {
+            display: grid;
+            grid-template-columns: 1fr 1fr;
+            gap: 40px;
+        }
+
+        .before-after-column {
+            background: white;
+            border-radius: 12px;
+            padding: 40px;
+            border: 2px solid;
+        }
+
+        .before {
+            border-color: #fecaca;
+            background-color: #fef2f2;
+        }
+
+        .after {
+            border-color: #dcfce7;
+            background-color: #f0fdf4;
+        }
+
+        .before-after-title {
+            font-size: 16px;
+            font-weight: 700;
+            margin-bottom: 28px;
+            display: flex;
+            align-items: center;
+            gap: 8px;
+        }
+
+        .before-after-item {
+            display: flex;
+            gap: 12px;
+            margin-bottom: 16px;
+            font-size: 13px;
+            color: #6b7280;
+            align-items: flex-start;
+        }
+
+        .before-after-item-icon {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-top: 2px;
+        }
+
+        @media (max-width: 768px) {
+            .before-after-grid {
+                grid-template-columns: 1fr;
+            }
+        }
+
+        /* Features Section */
+        .features {
+            padding: 80px 0;
+            background-color: #fafbfc;
+            background-image: radial-gradient(circle at 1px 1px, rgba(0,0,0,0.05) 1px, transparent 0);
+            background-size: 28px 28px;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .features-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(280px, 1fr));
+            gap: 24px;
+        }
+
+        .feature-card {
+            background: white;
+            padding: 28px;
+            border-radius: 16px;
+            border: 1px solid #e5e7eb;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .feature-card::before {
+            content: '';
+            position: absolute;
+            top: 0;
+            left: 0;
+            right: 0;
+            height: 3px;
+            background: linear-gradient(90deg, #2563EB, #60a5fa);
+            transform: scaleX(0);
+            transform-origin: left;
+            transition: transform 0.3s ease;
+        }
+
+        .feature-card:hover {
+            border-color: #dbeafe;
+            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.08);
+            transform: translateY(-6px);
+        }
+
+        .feature-card:hover::before {
+            transform: scaleX(1);
+        }
+
+        .feature-icon-box {
+            width: 48px;
+            height: 48px;
+            background-color: #eff6ff;
+            border-radius: 12px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            margin-bottom: 16px;
+            transition: all 0.3s ease;
+            color: #2563EB;
+        }
+
+        .feature-card:hover .feature-icon-box {
+            background-color: #2563EB;
+            color: white;
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .feature-icon {
+            width: 24px;
+            height: 24px;
+        }
+
+        .feature-card h3 {
+            font-size: 16px;
+            font-weight: 700;
+            color: #0f172a;
+            margin-bottom: 12px;
+        }
+
+        .feature-card p {
+            font-size: 13px;
+            color: #6b7280;
+            line-height: 1.6;
+        }
+
+        /* Urgency Bar */
+        .urgency-bar {
+            position: fixed;
+            bottom: 0;
+            left: 0;
+            right: 0;
+            background: linear-gradient(90deg, #2563EB, #1d4ed8);
+            color: white;
+            padding: 12px 0;
+            text-align: center;
+            font-size: 13px;
+            font-weight: 600;
+            z-index: 100;
+            box-shadow: 0 -2px 8px rgba(0, 0, 0, 0.1);
+        }
+
+        .urgency-bar.hidden {
+            display: none;
+        }
+
+        /* Toast Notifications */
+        .toast-container {
+            position: fixed;
+            bottom: 100px;
+            right: 20px;
+            z-index: 999;
+        }
+
+        .toast {
+            background: white;
+            border-left: 4px solid #10b981;
+            padding: 12px 16px;
+            border-radius: 8px;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.1);
+            margin-bottom: 8px;
+            font-size: 12px;
+            color: #1f2937;
+            animation: slideInRight 0.3s ease;
+            max-width: 300px;
+        }
+
+        @keyframes slideInRight {
+            from {
+                opacity: 0;
+                transform: translateX(100px);
+            }
+            to {
+                opacity: 1;
+                transform: translateX(0);
+            }
+        }
+
+        /* Guarantee Section */
+        .guarantee {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #f0fdf4, #fafafa);
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .guarantee-container {
+            max-width: 700px;
+            margin: 0 auto;
+            text-align: center;
+            background: white;
+            border: 2px solid #dcfce7;
+            border-radius: 16px;
+            padding: 48px 32px;
+            box-shadow: 0 12px 32px rgba(16, 185, 129, 0.08);
+        }
+
+        .guarantee-icon {
+            width: 64px;
+            height: 64px;
+            margin: 0 auto 24px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            background-color: #dcfce7;
+            border-radius: 12px;
+            color: #2563EB;
+        }
+
+        .guarantee-container h2 {
+            font-size: 28px;
+            font-weight: 800;
+            color: #15803d;
+            margin-bottom: 16px;
+        }
+
+        .guarantee-container p {
+            font-size: 15px;
+            line-height: 1.7;
+            color: #6b7280;
+        }
+
+        /* Testimonials */
+        .testimonials {
+            padding: 80px 0;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .testimonials-marquee {
+            overflow: hidden;
+            padding: 32px 0;
+        }
+
+        .testimonials-content {
+            display: flex;
+            gap: 24px;
+            animation: scrollTestimonials 50s linear infinite;
+        }
+
+        .testimonials-content:hover {
+            animation-play-state: paused;
+        }
+
+        @keyframes scrollTestimonials {
+            0% { transform: translateX(0); }
+            100% { transform: translateX(-50%); }
+        }
+
+        .testimonial-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            padding: 28px;
+            border-radius: 12px;
+            transition: all 0.3s ease;
+            position: relative;
+            min-width: 320px;
+            flex-shrink: 0;
+        }
+
+        .testimonial-card:hover {
+            border-color: #2563EB;
+            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.1);
+            transform: translateY(-4px);
+        }
+
+        .testimonial-stars {
+            display: flex;
+            gap: 4px;
+            margin-bottom: 12px;
+        }
+
+        .star {
+            width: 16px;
+            height: 16px;
+            color: #fbbf24;
+        }
+
+        .testimonial-quote-mark {
+            position: absolute;
+            top: 12px;
+            right: 16px;
+            font-size: 32px;
+            color: #e5e7eb;
+            opacity: 0.5;
+        }
+
+        .testimonial-text {
+            font-size: 14px;
+            color: #4b5563;
+            line-height: 1.7;
+            margin-bottom: 16px;
+            font-style: italic;
+        }
+
+        .testimonial-text strong {
+            color: #2563EB;
+            font-weight: 700;
+        }
+
+        .testimonial-author {
+            display: flex;
+            gap: 12px;
+            align-items: center;
+            font-size: 13px;
+        }
+
+        .testimonial-avatar {
+            width: 40px;
+            height: 40px;
+            border-radius: 50%;
+            background: linear-gradient(135deg, #2563EB, #60a5fa);
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: white;
+            font-weight: 700;
+            font-size: 14px;
+            flex-shrink: 0;
+        }
+
+        .testimonial-author strong {
+            color: #1f2937;
+            font-weight: 700;
+            display: block;
+        }
+
+        .testimonial-author span {
+            color: #6b7280;
+        }
+
+        /* Pricing Section */
+        .pricing {
+            padding: 80px 0;
+            background-color: #fafbfc;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .pricing-grid {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(300px, 1fr));
+            gap: 24px;
+            margin-top: 48px;
+        }
+
+        .pricing-card {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            padding: 32px;
+            transition: all 0.3s ease;
+            position: relative;
+            overflow: hidden;
+        }
+
+        .pricing-card.featured {
+            border: 2px solid;
+            border-image: linear-gradient(135deg, #2563EB, #60a5fa) 1;
+            box-shadow: 0 16px 40px rgba(37, 99, 235, 0.15);
+            transform: scale(1.02);
+        }
+
+        .pricing-card:hover:not(.featured) {
+            border-color: #d1d5db;
+            box-shadow: 0 8px 24px rgba(0, 0, 0, 0.08);
+        }
+
+        .pricing-badge {
+            display: inline-block;
+            background-color: #fef3c7;
+            color: #92400e;
+            padding: 4px 12px;
+            border-radius: 20px;
+            font-size: 11px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .pricing-name {
+            font-size: 18px;
+            font-weight: 700;
+            margin-bottom: 8px;
+            color: #0f172a;
+        }
+
+        .pricing-desc {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 24px;
+            line-height: 1.5;
+        }
+
+        .pricing-price {
+            font-size: 42px;
+            font-weight: 800;
+            color: #2563EB;
+            margin-bottom: 4px;
+        }
+
+        .pricing-old-price {
+            font-size: 18px;
+            color: #d1d5db;
+            text-decoration: line-through;
+            margin-right: 8px;
+        }
+
+        .pricing-savings {
+            font-size: 12px;
+            color: #10b981;
+            font-weight: 600;
+            margin-top: 8px;
+        }
+
+        .pricing-period {
+            font-size: 13px;
+            color: #6b7280;
+            font-weight: 500;
+            margin-bottom: 24px;
+        }
+
+        .pricing-features {
+            list-style: none;
+            margin-bottom: 28px;
+        }
+
+        .pricing-features li {
+            font-size: 13px;
+            color: #6b7280;
+            padding: 10px 0;
+            line-height: 1.6;
+            display: flex;
+            gap: 8px;
+        }
+
+        .pricing-check {
+            width: 20px;
+            height: 20px;
+            flex-shrink: 0;
+            color: #10b981;
+        }
+
+        .pricing-cta {
+            width: 100%;
+            padding: 12px 24px;
+            border-radius: 8px;
+            font-weight: 600;
+            font-size: 13px;
+            text-decoration: none;
+            text-align: center;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .pricing-cta.primary {
+            background-color: #2563EB;
+            color: white;
+        }
+
+        .pricing-cta.primary:hover {
+            background-color: #1d4ed8;
+            box-shadow: 0 8px 16px rgba(37, 99, 235, 0.3);
+        }
+
+        .pricing-cta.secondary {
+            background-color: transparent;
+            color: #2563EB;
+            border: 1px solid #dbeafe;
+        }
+
+        .pricing-cta.secondary:hover {
+            background-color: #f0f9ff;
+            border-color: #2563EB;
+        }
+
+        .pricing-tagline {
+            font-size: 11px;
+            color: #9ca3af;
+            text-align: center;
+            padding-top: 20px;
+            border-top: 1px solid #e5e7eb;
+            margin-top: 20px;
+        }
+
+        /* Loss Calculator */
+        .calculator {
+            padding: 80px 0;
+            background-color: #ffffff;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .calculator-container {
+            max-width: 600px;
+            margin: 0 auto;
+            background: linear-gradient(135deg, #f0f9ff, #fafbfc);
+            border-radius: 16px;
+            padding: 48px 32px;
+            border: 1px solid #dbeafe;
+        }
+
+        .calculator-title {
+            font-size: 28px;
+            font-weight: 800;
+            color: #0f172a;
+            text-align: center;
+            margin-bottom: 12px;
+        }
+
+        .calculator-subtitle {
+            font-size: 13px;
+            color: #6b7280;
+            text-align: center;
+            margin-bottom: 32px;
+        }
+
+        .slider-group {
+            margin-bottom: 32px;
+        }
+
+        .slider-label {
+            display: flex;
+            justify-content: space-between;
+            margin-bottom: 8px;
+            font-size: 13px;
+            font-weight: 600;
+            color: #1f2937;
+        }
+
+        .slider-value {
+            color: #2563EB;
+            font-weight: 700;
+        }
+
+        input[type="range"] {
+            width: 100%;
+            height: 6px;
+            border-radius: 3px;
+            background: #dbeafe;
+            outline: none;
+            -webkit-appearance: none;
+        }
+
+        input[type="range"]::-webkit-slider-thumb {
+            -webkit-appearance: none;
+            appearance: none;
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563EB;
+            cursor: pointer;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        input[type="range"]::-moz-range-thumb {
+            width: 20px;
+            height: 20px;
+            border-radius: 50%;
+            background: #2563EB;
+            cursor: pointer;
+            border: none;
+            box-shadow: 0 2px 8px rgba(37, 99, 235, 0.3);
+        }
+
+        .calculator-result {
+            background: white;
+            border: 2px solid #2563EB;
+            border-radius: 12px;
+            padding: 24px;
+            text-align: center;
+            margin-top: 32px;
+        }
+
+        .result-label {
+            font-size: 13px;
+            color: #6b7280;
+            margin-bottom: 8px;
+        }
+
+        .result-value {
+            font-size: 48px;
+            font-weight: 800;
+            color: #2563EB;
+            margin-bottom: 8px;
+        }
+
+        .result-subtext {
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        /* FAQ Section */
+        .faq {
+            padding: 80px 0;
+            background-color: #fafbfc;
+            border-bottom: 1px solid #f3f4f6;
+        }
+
+        .faq-content {
+            max-width: 700px;
+            margin: 0 auto;
+        }
+
+        .faq-item {
+            background: white;
+            border: 1px solid #e5e7eb;
+            border-radius: 12px;
+            margin-bottom: 16px;
+            overflow: hidden;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active {
+            border-color: #2563EB;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.1);
+        }
+
+        .faq-question {
+            padding: 20px;
+            cursor: pointer;
+            display: flex;
+            justify-content: space-between;
+            align-items: center;
+            font-weight: 600;
+            color: #1f2937;
+            user-select: none;
+            transition: all 0.3s ease;
+        }
+
+        .faq-item.active .faq-question {
+            color: #2563EB;
+        }
+
+        .faq-question:hover {
+            background-color: #f9fafb;
+        }
+
+        .faq-icon {
+            width: 20px;
+            height: 20px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            transition: transform 0.3s ease;
+            color: #2563EB;
+        }
+
+        .faq-item.active .faq-icon {
+            transform: rotate(180deg);
+        }
+
+        .faq-answer {
+            display: none;
+            padding: 0 20px 20px;
+            color: #6b7280;
+            font-size: 13px;
+            line-height: 1.7;
+            border-top: 1px solid #e5e7eb;
+        }
+
+        .faq-item.active .faq-answer {
+            display: block;
+            animation: slideDown 0.3s ease;
+        }
+
+        @keyframes slideDown {
+            from {
+                opacity: 0;
+                transform: translateY(-10px);
+            }
+            to {
+                opacity: 1;
+                transform: translateY(0);
+            }
+        }
+
+        /* Final CTA Section */
+        .final-cta {
+            padding: 80px 0;
+            background: linear-gradient(135deg, #0f172a, #1f2937);
+            position: relative;
+            overflow: hidden;
+            border-bottom: none;
+        }
+
+        .final-cta::before {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(37, 99, 235, 0.15), transparent);
+            border-radius: 50%;
+            top: -100px;
+            left: -100px;
+            pointer-events: none;
+        }
+
+        .final-cta::after {
+            content: '';
+            position: absolute;
+            width: 400px;
+            height: 400px;
+            background: radial-gradient(circle, rgba(59, 130, 246, 0.1), transparent);
+            border-radius: 50%;
+            bottom: -100px;
+            right: -100px;
+            pointer-events: none;
+        }
+
+        .final-cta-content {
+            position: relative;
+            z-index: 2;
+            text-align: center;
+        }
+
+        .final-cta h2 {
+            font-size: 48px;
+            font-weight: 800;
+            color: white;
+            margin-bottom: 24px;
+            line-height: 1.2;
+        }
+
+        .final-cta-highlight {
+            background: linear-gradient(135deg, #60a5fa, #2563EB);
+            -webkit-background-clip: text;
+            -webkit-text-fill-color: transparent;
+            background-clip: text;
+        }
+
+        .final-cta-button {
+            display: inline-block;
+            background: linear-gradient(135deg, #2563EB, #1d4ed8);
+            color: white;
+            padding: 16px 40px;
+            border-radius: 8px;
+            font-weight: 700;
+            font-size: 15px;
+            text-decoration: none;
+            border: none;
+            cursor: pointer;
+            transition: all 0.3s ease;
+            box-shadow: 0 8px 24px rgba(37, 99, 235, 0.3);
+            margin-top: 24px;
+        }
+
+        .final-cta-button:hover {
+            transform: translateY(-2px);
+            box-shadow: 0 12px 32px rgba(37, 99, 235, 0.4);
+        }
+
+        .final-cta-trust {
+            margin-top: 40px;
+            font-size: 12px;
+            color: #d1d5db;
+        }
+
+        /* Footer */
+        footer {
+            background-color: #1f2937;
+            color: #9ca3af;
+            padding: 40px 0;
+            border-top: 1px solid #374151;
+        }
+
+        .footer-content {
+            display: grid;
+            grid-template-columns: repeat(auto-fit, minmax(200px, 1fr));
+            gap: 32px;
+            margin-bottom: 32px;
+        }
+
+        .footer-section h3 {
+            color: white;
+            font-size: 14px;
+            font-weight: 700;
+            margin-bottom: 16px;
+        }
+
+        .footer-section a {
+            display: block;
+            color: #9ca3af;
+            text-decoration: none;
+            font-size: 13px;
+            margin-bottom: 8px;
+            transition: color 0.3s ease;
+        }
+
+        .footer-section a:hover {
+            color: #2563EB;
+        }
+
+        .footer-bottom {
+            border-top: 1px solid #374151;
+            padding-top: 24px;
+            text-align: center;
+            font-size: 12px;
+            color: #6b7280;
+        }
+
+        .social-icons {
+            display: flex;
+            gap: 16px;
+            margin-top: 16px;
+        }
+
+        .social-icon {
+            width: 32px;
+            height: 32px;
+            background-color: #374151;
+            border-radius: 8px;
+            display: flex;
+            align-items: center;
+            justify-content: center;
+            color: #d1d5db;
+            cursor: pointer;
+            transition: all 0.3s ease;
+        }
+
+        .social-icon:hover {
+            background-color: #2563EB;
+            color: white;
+        }
+
+        /* Animated Counters */
+        .counter {
+            font-weight: 800;
+            font-size: 28px;
+            color: #2563EB;
+        }
+
+        /* Responsive */
+        @media (max-width: 768px) {
+            h1 {
+                font-size: 40px;
+            }
+
+            .nav-links {
+                display: none;
+            }
+
+            .hamburger {
+                display: flex;
+            }
+
+            .mobile-menu {
+                padding: 20px;
+            }
+
+            .mobile-menu.active {
+                display: flex;
+            }
+
+            .section-title {
+                font-size: 28px;
+            }
+
+            .features-grid,
+            .pain-grid,
+            .pricing-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .before-after-grid {
+                grid-template-columns: 1fr;
+            }
+
+            .testimonials-content {
+                animation: none;
+                overflow-x: auto;
+                scroll-snap-type: x mandatory;
+            }
+
+            .testimonial-card {
+                scroll-snap-align: start;
+            }
+
+            .final-cta h2 {
+                font-size: 32px;
+            }
+
+            .toast-container {
+                bottom: 80px;
+                right: 10px;
+                left: 10px;
+            }
+
+            .toast {
+                max-width: none;
+            }
+        }
+
+        /* === CAMBIO 3: Before/After interactive toggle === */
+        .ba-toggle { display: flex; gap: 0; background: #f3f4f6; border-radius: 12px; padding: 4px; margin: 0 auto 40px; width: fit-content; }
+        .ba-toggle-btn { padding: 12px 32px; border: none; background: transparent; font-weight: 600; cursor: pointer; border-radius: 10px; transition: all 0.3s; font-size: 15px; color: #374151; }
+        .ba-toggle-btn.active-before { background: #ef4444; color: white; box-shadow: 0 2px 8px rgba(239,68,68,0.3); }
+        .ba-toggle-btn.active-after { background: #10b981; color: white; box-shadow: 0 2px 8px rgba(16,185,129,0.3); }
+        .ba-panel { display: none; animation: fadeSlideIn 0.4s ease; max-width: 720px; margin: 0 auto; }
+        .ba-panel.active { display: block; }
+        @keyframes fadeSlideIn { from { opacity: 0; transform: translateY(15px); } to { opacity: 1; transform: translateY(0); } }
+        .ba-item { display: flex; align-items: center; gap: 16px; padding: 16px 20px; background: white; border-radius: 12px; margin-bottom: 12px; font-size: 16px; border-left: 4px solid; opacity: 0; box-shadow: 0 2px 8px rgba(0,0,0,0.04); }
+        .ba-item.before-item { border-left-color: #ef4444; background: #fef2f2; }
+        .ba-item.after-item { border-left-color: #10b981; background: #f0fdf4; }
+        .ba-item-icon { width: 40px; height: 40px; border-radius: 10px; display: flex; align-items: center; justify-content: center; flex-shrink: 0; }
+        .ba-item.before-item .ba-item-icon { background: #fee2e2; color: #dc2626; animation: shakeIcon 2s ease infinite; }
+        .ba-item.after-item .ba-item-icon { background: #dcfce7; color: #059669; animation: bounceIcon 1.2s ease; }
+        @keyframes shakeIcon { 0%, 90%, 100% { transform: translateX(0); } 92%, 96% { transform: translateX(-2px); } 94%, 98% { transform: translateX(2px); } }
+        @keyframes bounceIcon { 0% { transform: scale(0); } 60% { transform: scale(1.2); } 100% { transform: scale(1); } }
+        @keyframes staggerIn { to { opacity: 1; transform: translateY(0); } }
+        .ba-stat { text-align: center; margin-top: 30px; padding: 24px; background: linear-gradient(135deg, #10b981, #059669); border-radius: 16px; color: white; box-shadow: 0 12px 32px rgba(16,185,129,0.25); }
+        .ba-stat-number { font-size: 48px; font-weight: 800; line-height: 1; }
+        .ba-stat-label { font-size: 14px; opacity: 0.95; margin-top: 6px; }
+
+        /* === CAMBIO 4: Feature card colors & stats === */
+        .feature-card { --card-color: #2563eb; }
+        .feature-card::before { background: var(--card-color) !important; }
+        .feature-card .feature-icon-box { background: color-mix(in srgb, var(--card-color) 12%, white); color: var(--card-color); }
+        .feature-card:hover { border-color: color-mix(in srgb, var(--card-color) 30%, white); box-shadow: 0 20px 40px color-mix(in srgb, var(--card-color) 18%, transparent); transform: translateY(-8px); }
+        .feature-card:hover .feature-icon-box { background: var(--card-color); color: white; transform: scale(1.1) rotate(5deg); }
+        .feature-icon-box { width: 56px; height: 56px; }
+        .feature-icon { width: 28px; height: 28px; }
+        .feature-stat { margin-top: 12px; font-size: 13px; font-weight: 700; color: var(--card-color); letter-spacing: 0.5px; text-transform: uppercase; }
+        .reveal { opacity: 0; transform: translateY(30px); transition: opacity 0.6s ease, transform 0.6s ease; }
+        .reveal.visible { opacity: 1; transform: translateY(0); }
+
+        /* === CAMBIO 5: Testimonials marquee mask & speed === */
+        .testimonials-marquee {
+            -webkit-mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+            mask-image: linear-gradient(to right, transparent 0%, black 8%, black 92%, transparent 100%);
+        }
+        .testimonials-content { animation-duration: 25s !important; }
+        .testimonial-card { min-width: 350px !important; }
+        .testimonial-avatar {
+            width: 48px !important;
+            height: 48px !important;
+            background-size: cover !important;
+            background-position: center !important;
+            border: 2px solid #2563eb;
+            color: transparent;
+        }
+
+        /* === CAMBIO 6: Pricing improvements === */
+        .pricing-card.featured { transform: scale(1.05); border: 2px solid #2563eb !important; z-index: 2; }
+        .pricing-card { transition: all 0.3s ease; }
+        .pricing-card:hover:not(.featured) { transform: translateY(-5px); box-shadow: 0 20px 40px rgba(37,99,235,0.15); border-color: #2563eb; }
+        .pricing-card.featured:hover { transform: scale(1.05) translateY(-5px); box-shadow: 0 24px 50px rgba(37,99,235,0.25); }
+        .pricing-badge { animation: pulseBadge 2s ease infinite; background: linear-gradient(135deg, #2563eb, #1d4ed8) !important; color: white !important; }
+        @keyframes pulseBadge { 0%, 100% { box-shadow: 0 0 0 0 rgba(37,99,235,0.5); } 50% { box-shadow: 0 0 0 8px rgba(37,99,235,0); } }
+        .pricing-strike { font-size: 18px; color: #9ca3af; text-decoration: line-through; margin-right: 8px; font-weight: 600; }
+        .pricing-guarantee-mini { display: flex; align-items: center; justify-content: center; gap: 6px; margin-top: 10px; font-size: 11px; color: #10b981; font-weight: 600; }
+
+        /* === CAMBIO 7: General animations / floating bg === */
+        .floating-blob { position: absolute; border-radius: 50%; filter: blur(80px); opacity: 0.4; pointer-events: none; z-index: 0; animation: floatBlob 12s ease-in-out infinite; }
+        @keyframes floatBlob { 0%, 100% { transform: translateY(0) translateX(0); } 50% { transform: translateY(-30px) translateX(20px); } }
+        .features { background: linear-gradient(180deg, #f8fafc 0%, #eef2ff 100%) !important; position: relative; overflow: hidden; }
+        .before-after { background: linear-gradient(180deg, #ffffff 0%, #fafafa 100%) !important; position: relative; overflow: hidden; }
+        .before-after .container, .features .container { position: relative; z-index: 1; }
+
+        /* === CAMBIO 8: Video placeholder mockup === */
+        .video-container {
+            border: 1px solid rgba(37,99,235,0.4);
+            box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 0 1px rgba(37,99,235,0.2);
+            animation: glowPulse 3s ease-in-out infinite;
+        }
+        @keyframes glowPulse {
+            0%, 100% { box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 30px rgba(37,99,235,0.2); }
+            50% { box-shadow: 0 20px 60px rgba(0,0,0,0.15), 0 0 60px rgba(37,99,235,0.5); }
+        }
+        .video-mockup {
+            width: 100%; height: 100%;
+            display: flex; flex-direction: column;
+            align-items: center; justify-content: center;
+            gap: 24px; padding: 32px;
+            background: radial-gradient(ellipse at center, #1e3a8a 0%, #0f172a 70%);
+        }
+        .video-mockup-text {
+            font-size: 28px; font-weight: 800; color: white;
+            text-align: center;
+            border-right: 3px solid #60a5fa;
+            white-space: nowrap; overflow: hidden;
+            animation: typing 3.5s steps(28, end) infinite, blinkCaret 0.75s step-end infinite;
+            max-width: 100%;
+        }
+        @keyframes typing { 0%, 10% { width: 0; } 50%, 90% { width: 28ch; } 100% { width: 0; } }
+        @keyframes blinkCaret { from, to { border-color: transparent; } 50% { border-color: #60a5fa; } }
+        .video-mockup-cta {
+            background: #2563eb; color: white;
+            padding: 12px 28px; border-radius: 8px;
+            text-decoration: none; font-weight: 600;
+            font-size: 14px;
+            box-shadow: 0 4px 16px rgba(37,99,235,0.4);
+            transition: all 0.3s ease;
+        }
+        .video-mockup-cta:hover { transform: translateY(-2px); box-shadow: 0 8px 24px rgba(37,99,235,0.6); }
+    </style>
+    <!-- Google tag (gtag.js) -->
+    <script async src="https://www.googletagmanager.com/gtag/js?id=AW-18119954778"></script>
+    <script>
+      window.dataLayer = window.dataLayer || [];
+      function gtag(){dataLayer.push(arguments);}
+      gtag('js', new Date());
+      gtag('config', 'AW-18119954778');
+    </script>
+</head>
+<body>
+    <!-- Navigation -->
+    <nav id="navbar">
+        <div class="nav-content">
+            <a href="#" class="nav-logo">
+                <svg viewBox="0 0 28 28" width="28" height="28" fill="none">
+                    <rect width="28" height="28" rx="6" fill="#2563EB"/>
+                    <path d="M8 8h4v12H8V8zm8 0h4v12h-4V8z" fill="white"/>
+                    <path d="M12 12h4v4h-4v-4z" fill="white" opacity="0.7"/>
+                </svg>
+                <span style="display: flex; flex-direction: column; line-height: 1.1;">
+                    <span style="font-size: 18px; font-weight: 800;">GPT Works</span>
+                    <span style="font-size: 10px; font-weight: 500; opacity: 0.6; -webkit-text-fill-color: #6b7280;">Luna Operativa</span>
+                </span>
+            </a>
+            <ul class="nav-links">
+                <li><a href="#features">Características</a></li>
+                <li><a href="#pricing">Precios</a></li>
+                <li><a href="#faq">FAQ</a></li>
+            </ul>
+            <div class="nav-buttons">
+                <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="btn-demo">Demo Gratis</a>
+            </div>
+            <button class="hamburger" id="hamburger">
+                <span></span>
+                <span></span>
+                <span></span>
+            </button>
+        </div>
+        <div class="mobile-menu" id="mobileMenu">
+            <a href="#features">Características</a>
+            <a href="#pricing">Precios</a>
+            <a href="#faq">FAQ</a>
+            <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="btn-demo">Demo Gratis</a>
+        </div>
+    </nav>
+
+    <!-- Hero Section -->
+    <section class="hero">
+        <div class="container">
+            <div class="hero-content">
+                <div class="badge">
+                    <span>Integrado con</span>
+                    <div class="badge-icons" style="display: flex; gap: 10px; align-items: center;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/6/6b/WhatsApp.svg" alt="WhatsApp" style="width: 24px; height: 24px;">
+                        <img src="https://upload.wikimedia.org/wikipedia/commons/a/a5/Google_Calendar_icon_%282020%29.svg" alt="Google Calendar" style="width: 24px; height: 24px;">
+                        <!-- MercadoPago icon (SVG fallback since CDN image breaks) -->
+                        <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none">
+                            <rect width="24" height="24" rx="4" fill="#00bcff"/>
+                            <text x="12" y="16" text-anchor="middle" fill="white" font-size="10" font-weight="700" font-family="Inter, sans-serif">MP</text>
+                        </svg>
+                    </div>
+                </div>
+
+                <h1>Capturá hasta 40% más reservas respondiendo WhatsApp en 3 segundos</h1>
+                <p class="hero-subtitle">Incluso a las 2 AM. <strong>Luna atiende, cotiza y cobra por vos</strong> — sin que pierdas una sola consulta. Tu recepcionista de IA que nunca duerme.</p>
+
+                <div class="hero-cta" style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap;">
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="btn-demo" style="font-size: 16px; padding: 14px 32px;">Hablar con Luna Ahora</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20la%20demo%20de%2090%20segundos" style="display: inline-block; padding: 14px 32px; border: 2px solid #2563EB; color: #2563EB; border-radius: 8px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.3s;">Ver demo de 90 seg</a>
+                </div>
+
+                <div class="live-metric" id="liveMetric">
+                    ✓ Caso real: Hotel Los Pinos — +88% reservas en 6 semanas
+                </div>
+            </div>
+
+            <!-- Dashboard Mockup -->
+            <div class="dashboard-mockup">
+                <div class="window-chrome">
+                    <div class="chrome-dot red"></div>
+                    <div class="chrome-dot yellow"></div>
+                    <div class="chrome-dot green"></div>
+                </div>
+
+                <div class="dashboard-container">
+                    <div class="dashboard-sidebar">
+                        <div class="sidebar-logo">LUNA OPERATIVA</div>
+                        <input type="text" class="sidebar-search" placeholder="Buscar...">
+                        <ul class="sidebar-nav">
+                            <li class="sidebar-nav-item">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                    <path d="M3 10h18M10 3v18"/>
+                                </svg>
+                                Reservas del día
+                            </li>
+                            <li class="sidebar-nav-item active">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                                </svg>
+                                Conversaciones
+                            </li>
+                            <li class="sidebar-nav-item">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <rect x="3" y="4" width="18" height="18" rx="2"/>
+                                    <path d="M3 10h18M10 3v18"/>
+                                </svg>
+                                Calendario
+                            </li>
+                            <li class="sidebar-nav-item">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                    <circle cx="12" cy="7" r="4"/>
+                                </svg>
+                                Huéspedes
+                            </li>
+                            <li class="sidebar-nav-item">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <circle cx="12" cy="12" r="1"/>
+                                    <circle cx="19" cy="12" r="1"/>
+                                    <circle cx="5" cy="12" r="1"/>
+                                </svg>
+                                Configuración
+                            </li>
+                            <li class="sidebar-nav-item">
+                                <svg class="sidebar-nav-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                    <polyline points="12 1 3 7 3 17 12 23 21 17 21 7"/>
+                                </svg>
+                                Métricas
+                            </li>
+                        </ul>
+                    </div>
+
+                    <div class="dashboard-main">
+                        <div class="dashboard-header">
+                            <svg style="width: 16px; height: 16px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                                <circle cx="12" cy="7" r="4"/>
+                            </svg>
+                            <span>María García · WhatsApp</span>
+                            <div class="status-dot"></div>
+                        </div>
+
+                        <div class="chat-area">
+                            <div class="chat-message guest">Hola, ¿tienen disponibilidad para 2 personas del 15 al 18 de marzo?</div>
+                            <div class="chat-message luna">¡Hola María! 😊 Sí, tenemos disponibilidad. Te cuento las opciones:</div>
+                            <div class="chat-message luna">
+                                <div class="room-card-inline">
+                                    <strong>🏨 Hab. Doble Superior</strong>
+                                    Vista al río · $45.000/noche · Desayuno incluido · Pileta + Spa
+                                </div>
+                            </div>
+                            <div class="chat-message guest">¡Genial! Quiero reservar</div>
+                            <div class="chat-message luna">
+                                ¡Perfecto! Te envío el link de pago 👇
+                                <button class="payment-button-inline">Pagar MercadoPago</button>
+                            </div>
+                        </div>
+
+                        <div class="chat-input-area">
+                            <div class="typing-indicator">
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                                <div class="typing-dot"></div>
+                            </div>
+                            <span>Luna está respondiendo...</span>
+                        </div>
+                    </div>
+
+                    <div class="dashboard-right-panel">
+                        <div class="right-panel-header">Resumen de Hoy</div>
+                        <div class="stat-card-mini">
+                            <div class="stat-value">12</div>
+                            <div class="stat-label">consultas</div>
+                        </div>
+                        <div class="stat-card-mini">
+                            <div class="stat-value">8</div>
+                            <div class="stat-label">reservas</div>
+                        </div>
+                        <div class="stat-card-mini">
+                            <div class="stat-value">95%</div>
+                            <div class="stat-label">resueltas por IA</div>
+                        </div>
+                        <div class="stat-card-mini">
+                            <div class="stat-value">$540k</div>
+                            <div class="stat-label">facturado</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Trust Strip -->
+    <section class="trust-strip">
+        <div class="container">
+            <p class="trust-title">CONFÍAN EN NOSOTROS</p>
+            <div class="marquee">
+                <div class="marquee-content">
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        Hotel Los Pinos
+                    </div>
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        Casa Valle
+                    </div>
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        Eco Retreat
+                    </div>
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        Boutique Salta
+                    </div>
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        La Montaña
+                    </div>
+                    <!-- Duplicate for continuous scroll -->
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        Hotel Los Pinos
+                    </div>
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        Casa Valle
+                    </div>
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        Eco Retreat
+                    </div>
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        Boutique Salta
+                    </div>
+                    <div class="marquee-item">
+                        <svg class="marquee-icon" viewBox="0 0 24 24" fill="currentColor"><path d="M12 2C6.48 2 2 6.48 2 12s4.48 10 10 10 10-4.48 10-10S17.52 2 12 2zm0 18c-4.42 0-8-3.58-8-8s3.58-8 8-8 8 3.58 8 8-3.58 8-8 8z"/><path d="M16.5 7.5L11 13l-2.5-2.5"/></svg>
+                        La Montaña
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Founder Story Section -->
+    <section style="padding: 60px 0; background: linear-gradient(135deg, #f0fdf4 0%, #ecfdf5 100%);">
+        <div class="container">
+            <div style="max-width: 800px; margin: 0 auto; display: flex; gap: 32px; align-items: center; flex-wrap: wrap; justify-content: center;">
+                <div style="width: 100px; height: 100px; border-radius: 50%; background: linear-gradient(135deg, #2563EB, #1d4ed8); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 32px; flex-shrink: 0;">NC</div>
+                <div style="flex: 1; min-width: 280px;">
+                    <h2 style="font-size: 22px; font-weight: 700; margin-bottom: 8px; color: #1f2937;">Hecho por argentinos, para hoteles argentinos</h2>
+                    <p style="color: #4b5563; line-height: 1.7; font-size: 15px; margin-bottom: 12px;">Soy Nicolás, fundador de GPT Works. Creé Luna porque vi que los hoteles en Argentina pierden reservas todos los días por no poder responder WhatsApp a tiempo. No somos una agencia — somos un equipo de tecnología que entiende la hotelería local, los pagos en pesos y MercadoPago.</p>
+                    <div style="display: flex; gap: 16px; align-items: center; flex-wrap: wrap;">
+                        <span style="font-size: 13px; color: #6b7280;">Córdoba, Argentina</span>
+                        <span style="font-size: 13px; color: #6b7280;">·</span>
+                        <a href="https://wa.me/5493541267595?text=Hola%20Nicolás%2C%20quiero%20saber%20más%20de%20Luna" style="font-size: 13px; color: #2563EB; text-decoration: none; font-weight: 600;">Hablá directo conmigo →</a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Pain Section -->
+    <section class="pain-section">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Tus mayores problemas con las reservas</h2>
+                <p class="section-subtitle">Te entendemos. Esto es lo que ven todos los hoteleros.</p>
+            </div>
+
+            <div class="pain-grid">
+                <div class="pain-card">
+                    <div class="pain-card-icon">
+                        <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <h3>Tardas horas en responder</h3>
+                    <p>Mientras dormís o estás ocupado, tus clientes buscan competencia</p>
+                </div>
+
+                <div class="pain-card">
+                    <div class="pain-card-icon">
+                        <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M12 1v22M4.22 4.22l15.56 15.56M1 12h22"/>
+                        </svg>
+                    </div>
+                    <h3>Pierdes comisiones en no-shows</h3>
+                    <p>Clientes que reservan pero no llegan = dinero perdido</p>
+                </div>
+
+                <div class="pain-card">
+                    <div class="pain-card-icon">
+                        <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M9 12l2 2 4-4M7 20H5a2 2 0 0 1-2-2V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2v14a2 2 0 0 1-2 2h-5"/>
+                        </svg>
+                    </div>
+                    <h3>Trabajo repetitivo agotador</h3>
+                    <p>Responder las mismas preguntas 100 veces por día (que agotador)</p>
+                </div>
+
+                <div class="pain-card">
+                    <div class="pain-card-icon">
+                        <svg style="width: 24px; height: 24px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="23 6 13.5 15.5 8 10 1 17"/><polyline points="17 6 23 6 23 12"/>
+                        </svg>
+                    </div>
+                    <h3>Sin datos sobre qué funciona</h3>
+                    <p>No sabés qué habitaciones atraen más ni en qué época</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Before/After Section -->
+    <section class="before-after">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">De caos a sistema</h2>
+                <p class="section-subtitle">Mirá la diferencia que Luna genera en tu operación</p>
+            </div>
+
+            <div class="ba-toggle">
+                <button class="ba-toggle-btn active-before" data-target="before">Sin Luna</button>
+                <button class="ba-toggle-btn" data-target="after">Con Luna</button>
+            </div>
+
+            <div id="ba-before" class="ba-panel active">
+                <div class="ba-item before-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/></svg></span>
+                    <span>Esperás horas para responder consultas</span>
+                </div>
+                <div class="ba-item before-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="6" x2="6" y2="18"/><line x1="6" y1="6" x2="18" y2="18"/></svg></span>
+                    <span>Perdés reservas a competidores más rápidos</span>
+                </div>
+                <div class="ba-item before-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 1v22M4.22 4.22l15.56 15.56"/></svg></span>
+                    <span>Gastás tiempo valioso en respuestas manuales</span>
+                </div>
+                <div class="ba-item before-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><circle cx="12" cy="12" r="10"/><line x1="12" y1="8" x2="12" y2="12"/><line x1="12" y1="16" x2="12.01" y2="16"/></svg></span>
+                    <span>No-shows sin confirmación real</span>
+                </div>
+                <div class="ba-item before-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/></svg></span>
+                    <span>Sin datos sobre preferencias de huéspedes</span>
+                </div>
+            </div>
+
+            <div id="ba-after" class="ba-panel">
+                <div class="ba-item after-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span>Responde al instante, 24/7 sin descansar</span>
+                </div>
+                <div class="ba-item after-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span>Captura todas las consultas, ninguna se escapa</span>
+                </div>
+                <div class="ba-item after-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span>Tú enfocate en otras cosas importantes</span>
+                </div>
+                <div class="ba-item after-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span>Confirmación automática y recordatorios</span>
+                </div>
+                <div class="ba-item after-item">
+                    <span class="ba-item-icon"><svg width="22" height="22" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="3"><polyline points="20 6 9 17 4 12"/></svg></span>
+                    <span>Dashboard con insights de preferencias</span>
+                </div>
+                <div class="ba-stat">
+                    <div class="ba-stat-number">+<span id="ba-counter">0</span>%</div>
+                    <div class="ba-stat-label">Más reservas — Hotel Los Pinos en 30 días</div>
+                </div>
+            </div>
+
+            <div class="floating-blob" style="background: #fecaca; width: 280px; height: 280px; top: 10%; left: -100px;"></div>
+            <div class="floating-blob" style="background: #bbf7d0; width: 320px; height: 320px; bottom: 5%; right: -120px; animation-delay: -6s;"></div>
+        </div>
+    </section>
+
+    <!-- Features Section -->
+    <section class="features" id="features">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Todo lo que Luna hace por vos</h2>
+                <p class="section-subtitle">Automatización inteligente para cada paso de la reserva</p>
+            </div>
+
+            <div class="features-grid">
+                <div class="feature-card reveal" style="--card-color: #2563eb;">
+                    <div class="feature-icon-box">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M21 15a2 2 0 0 1-2 2H7l-4 4V5a2 2 0 0 1 2-2h14a2 2 0 0 1 2 2z"/>
+                        </svg>
+                    </div>
+                    <h3>Respuestas automáticas</h3>
+                    <p>IA entrenada en tu hotel responde consultas sobre disponibilidad, precios y servicios al instante</p>
+                    <div class="feature-stat">Responde en &lt;3 segundos</div>
+                </div>
+
+                <div class="feature-card reveal" style="--card-color: #10b981;">
+                    <div class="feature-icon-box">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <path d="M3 9l9-7 9 7v11a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2z"/><polyline points="9 22 9 12 15 12 15 22"/>
+                        </svg>
+                    </div>
+                    <h3>Gestión de reservas</h3>
+                    <p>Procesa el flujo completo de reserva: disponibilidad, datos del huésped, confirmación y pago</p>
+                    <div class="feature-stat">+88% reservas</div>
+                </div>
+
+                <div class="feature-card reveal" style="--card-color: #8b5cf6;">
+                    <div class="feature-icon-box">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="3" y="4" width="18" height="18" rx="2"/><path d="M3 10h18M10 3v18"/>
+                        </svg>
+                    </div>
+                    <h3>Integración con calendario</h3>
+                    <p>Conecta con Google Calendar, Booking.com y otros para sincronización automática de reservas</p>
+                    <div class="feature-stat">Sync en tiempo real</div>
+                </div>
+
+                <div class="feature-card reveal" style="--card-color: #f59e0b;">
+                    <div class="feature-icon-box">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <circle cx="12" cy="12" r="10"/><polyline points="12 6 12 12 16 14"/>
+                        </svg>
+                    </div>
+                    <h3>Chat 24/7</h3>
+                    <p>Atiende consultas en WhatsApp con el tono y estilo personalizado de tu hotel, sin descansos</p>
+                    <div class="feature-stat">Ahorra 6hs diarias</div>
+                </div>
+
+                <div class="feature-card reveal" style="--card-color: #06b6d4;">
+                    <div class="feature-icon-box">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <rect x="2" y="5" width="20" height="14" rx="2"/><line x1="2" y1="10" x2="22" y2="10"/>
+                        </svg>
+                    </div>
+                    <h3>Pagos integrados</h3>
+                    <p>Cobrá directamente en el chat con MercadoPago, Stripe y otros gateways de pago</p>
+                    <div class="feature-stat">0 no-shows</div>
+                </div>
+
+                <div class="feature-card reveal" style="--card-color: #ec4899;">
+                    <div class="feature-icon-box">
+                        <svg class="feature-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <line x1="18" y1="20" x2="18" y2="10"/><line x1="12" y1="20" x2="12" y2="4"/><line x1="6" y1="20" x2="6" y2="14"/>
+                        </svg>
+                    </div>
+                    <h3>Dashboard y métricas</h3>
+                    <p>Ve en tiempo real: consultas capturadas, reservas completadas, ingresos y tasa de conversión</p>
+                    <div class="feature-stat">Insights al toque</div>
+                </div>
+            </div>
+
+            <div class="floating-blob" style="background: #dbeafe; width: 350px; height: 350px; top: 10%; right: -150px;"></div>
+            <div class="floating-blob" style="background: #fce7f3; width: 280px; height: 280px; bottom: 10%; left: -120px; animation-delay: -6s;"></div>
+        </div>
+    </section>
+
+    <!-- Loss Calculator -->
+    <section class="calculator">
+        <div class="container">
+            <div class="calculator-container">
+                <h2 class="calculator-title">¿Cuánto estás perdiendo?</h2>
+                <p class="calculator-subtitle">Calcula el costo real de no tener respuestas automáticas</p>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Consultas por día:</span>
+                        <span class="slider-value" id="consultasValue">15</span>
+                    </div>
+                    <input type="range" id="consultasSlider" min="5" max="100" value="15" step="1">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Precio promedio por noche:</span>
+                        <span class="slider-value" id="precioValue">$40.000</span>
+                    </div>
+                    <input type="range" id="precioSlider" min="10000" max="200000" value="40000" step="5000">
+                </div>
+
+                <div class="slider-group">
+                    <div class="slider-label">
+                        <span>Tasa de conversión sin IA:</span>
+                        <span class="slider-value" id="conversionValue">15%</span>
+                    </div>
+                    <input type="range" id="conversionSlider" min="5" max="50" value="15" step="1">
+                </div>
+
+                <div class="calculator-result">
+                    <div class="result-label">Estás perdiendo cada mes:</div>
+                    <div class="result-value">$<span id="resultValue">270000</span></div>
+                    <div class="result-subtext" id="paybackText" style="margin-bottom: 16px;">Luna se paga sola en menos de una semana con estas cifras</div>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" style="display: inline-block; background: #10b981; color: white; padding: 14px 32px; border-radius: 10px; font-weight: 700; font-size: 15px; text-decoration: none; transition: all 0.3s;">Recuperá esto ahora →</a>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Guarantee Section -->
+    <section class="guarantee">
+        <div class="container">
+            <div class="guarantee-container">
+                <div class="guarantee-icon">
+                    <svg style="width: 48px; height: 48px;" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                        <path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/><polyline points="16 12 12 16 8 12"/>
+                    </svg>
+                </div>
+                <h2>30 días de garantía o devolución 100%</h2>
+                <p>Probá Luna sin riesgo. Si en 30 días no ves resultados reales, te devolvemos todo. Sin preguntas, sin complicaciones. Estamos seguros de que te va a encantar.</p>
+            </div>
+        </div>
+    </section>
+
+    <!-- Case Study Section -->
+    <section class="testimonials" id="caso">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Caso real de un hotel usando Luna</h2>
+                <p class="section-subtitle">Hotel Los Pinos, Villa Carlos Paz, Córdoba — 22 habitaciones, gestión familiar</p>
+            </div>
+
+            <div style="max-width: 880px; margin: 0 auto;">
+                <!-- Case Study Card -->
+                <div style="background: white; border-radius: 16px; padding: 40px; box-shadow: 0 4px 24px rgba(0,0,0,0.08); border: 1px solid #e5e7eb;">
+                    <div style="display: flex; align-items: center; gap: 16px; margin-bottom: 24px;">
+                        <div style="width: 56px; height: 56px; border-radius: 12px; background: linear-gradient(135deg, #2563eb, #1d4ed8); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 20px;">LP</div>
+                        <div>
+                            <strong style="font-size: 18px;">Hotel Los Pinos</strong>
+                            <div style="color: #6b7280; font-size: 14px;">Villa Carlos Paz, Córdoba · 22 habitaciones</div>
+                        </div>
+                    </div>
+
+                    <div style="background: #fef2f2; border-left: 3px solid #ef4444; padding: 16px 20px; border-radius: 8px; margin-bottom: 24px;">
+                        <strong style="color: #991b1b; font-size: 14px;">El problema antes de Luna:</strong>
+                        <p style="color: #4b5563; font-size: 14px; margin-top: 6px; line-height: 1.6;">Perdían consultas durante la noche y los fines de semana. El tiempo promedio de respuesta por WhatsApp era de <strong>4 horas</strong>. Muchos huéspedes terminaban reservando en otro lado mientras esperaban.</p>
+                    </div>
+
+                    <p style="font-size: 13px; font-weight: 700; text-transform: uppercase; color: #6b7280; letter-spacing: 0.5px; margin-bottom: 14px;">Después de 8 semanas con Luna:</p>
+
+                    <div style="display: grid; grid-template-columns: repeat(2, 1fr); gap: 16px; margin-bottom: 28px;">
+                        <div style="text-align: center; padding: 22px 16px; background: #eff6ff; border-radius: 12px; border: 1px solid #dbeafe;">
+                            <div style="font-size: 30px; font-weight: 800; color: #2563eb; line-height: 1.1;">4hs → 2 min</div>
+                            <div style="font-size: 13px; color: #6b7280; margin-top: 8px;">Tiempo de respuesta</div>
+                        </div>
+                        <div style="text-align: center; padding: 22px 16px; background: #eff6ff; border-radius: 12px; border: 1px solid #dbeafe;">
+                            <div style="font-size: 30px; font-weight: 800; color: #2563eb; line-height: 1.1;">38 → 51</div>
+                            <div style="font-size: 13px; color: #6b7280; margin-top: 8px;">Reservas mensuales (+34%)</div>
+                        </div>
+                        <div style="text-align: center; padding: 22px 16px; background: #eff6ff; border-radius: 12px; border: 1px solid #dbeafe;">
+                            <div style="font-size: 30px; font-weight: 800; color: #2563eb; line-height: 1.1;">~$180.000</div>
+                            <div style="font-size: 13px; color: #6b7280; margin-top: 8px;">Ingresos adicionales/mes (estimado)</div>
+                        </div>
+                        <div style="text-align: center; padding: 22px 16px; background: #eff6ff; border-radius: 12px; border: 1px solid #dbeafe;">
+                            <div style="font-size: 30px; font-weight: 800; color: #2563eb; line-height: 1.1;">~15 hs</div>
+                            <div style="font-size: 13px; color: #6b7280; margin-top: 8px;">Por semana liberadas al dueño</div>
+                        </div>
+                    </div>
+
+                    <div style="padding: 20px 24px; background: #f8fafc; border-radius: 10px; border-left: 3px solid #2563eb; font-size: 15px; color: #374151; line-height: 1.7; font-style: italic;">
+                        "Antes perdíamos consultas sin darnos cuenta. Ahora Luna responde al instante y nosotros nos enfocamos en los huéspedes que ya están en el hotel."
+                        <div style="margin-top: 10px; font-style: normal; font-size: 13px; color: #6b7280;">— Martín R., dueño de Hotel Los Pinos</div>
+                    </div>
+
+                    <p style="margin-top: 18px; font-size: 12px; color: #9ca3af; text-align: center; line-height: 1.5;">Resultados medidos entre enero y marzo 2026. Los resultados varían según ocupación, temporada y canal de entrada de consultas.</p>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Founder Story Section -->
+    <section style="padding: 80px 0; background: white;">
+        <div class="container">
+            <div style="max-width: 980px; margin: 0 auto;">
+                <div style="display: grid; grid-template-columns: 180px 1fr; gap: 40px; align-items: start;" class="founder-grid">
+                    <div style="display: flex; justify-content: center;">
+                        <div style="width: 160px; height: 160px; border-radius: 50%; background: linear-gradient(135deg, #2563eb, #1d4ed8); display: flex; align-items: center; justify-content: center; color: white; font-weight: 800; font-size: 56px; box-shadow: 0 8px 28px rgba(37,99,235,0.25);">NC</div>
+                    </div>
+                    <div>
+                        <h2 style="font-size: 28px; font-weight: 800; margin-bottom: 20px; color: #1f2937;">Quién está detrás de Luna</h2>
+                        <p style="color: #374151; font-size: 16px; line-height: 1.75; margin-bottom: 16px;"><strong>Hola, soy Nicolás.</strong></p>
+                        <p style="color: #374151; font-size: 16px; line-height: 1.75; margin-bottom: 16px;">Hace unos años mi familia manejaba una hostería chica en las sierras de Córdoba. Y había algo que nos pasaba todas las semanas: a las 11 de la noche llegaba un WhatsApp preguntando si había lugar para el finde, nadie lo veía hasta la mañana, y cuando respondíamos ya habían reservado en otro lado.</p>
+                        <p style="color: #374151; font-size: 16px; line-height: 1.75; margin-bottom: 16px;">Perdíamos reservas que ya estaban ganadas. Solo porque nadie podía estar 24 horas mirando el celular.</p>
+                        <p style="color: #374151; font-size: 16px; line-height: 1.75; margin-bottom: 16px;">Luna nació de esa bronca. Es la herramienta que a nosotros nos hubiera cambiado el mes. Responde en segundos, cotiza, y avisa a los dueños cuando hay algo importante. Nada más. Sin magia, sin promesas raras.</p>
+                        <p style="color: #374151; font-size: 16px; line-height: 1.75; margin-bottom: 16px;">Hoy la estamos probando con los primeros hoteles de Córdoba. Si querés ser uno de ellos, escribime directo y charlamos sin compromiso.</p>
+                        <p style="color: #6b7280; font-size: 15px; margin-bottom: 24px;">— <strong style="color: #1f2937;">Nicolás Cortés</strong>, fundador de GPT Works</p>
+                        <a href="https://wa.me/5493541267595?text=Hola%20Nicol%C3%A1s%2C%20vi%20la%20landing%20y%20quiero%20saber%20m%C3%A1s%20de%20Luna" style="display: inline-flex; align-items: center; gap: 10px; background: #2563eb; color: white; padding: 14px 26px; border-radius: 10px; font-weight: 700; text-decoration: none; font-size: 15px; box-shadow: 0 4px 14px rgba(37,99,235,0.3); transition: all 0.2s;">
+                            <svg width="20" height="20" viewBox="0 0 24 24" fill="currentColor"><path d="M17.472 14.382c-.297-.149-1.758-.867-2.03-.967-.273-.099-.471-.148-.67.15-.197.297-.767.966-.94 1.164-.173.199-.347.223-.644.075-.297-.15-1.255-.463-2.39-1.475-.883-.788-1.48-1.761-1.653-2.059-.173-.297-.018-.458.13-.606.134-.133.298-.347.446-.52.149-.174.198-.298.298-.497.099-.198.05-.371-.025-.52-.075-.149-.669-1.612-.916-2.207-.242-.579-.487-.5-.669-.51-.173-.008-.371-.01-.57-.01-.198 0-.52.074-.792.372-.272.297-1.04 1.016-1.04 2.479 0 1.462 1.065 2.875 1.213 3.074.149.198 2.096 3.2 5.077 4.487.709.306 1.262.489 1.694.625.712.227 1.36.195 1.871.118.571-.085 1.758-.719 2.006-1.413.248-.694.248-1.289.173-1.413-.074-.124-.272-.198-.57-.347m-5.421 7.403h-.004a9.87 9.87 0 01-5.031-1.378l-.361-.214-3.741.982.998-3.648-.235-.374a9.86 9.86 0 01-1.51-5.26c.001-5.45 4.436-9.884 9.888-9.884 2.64 0 5.122 1.03 6.988 2.898a9.825 9.825 0 012.893 6.994c-.003 5.45-4.437 9.884-9.885 9.884m8.413-18.297A11.815 11.815 0 0012.05 0C5.495 0 .16 5.335.157 11.892c0 2.096.547 4.142 1.588 5.945L.057 24l6.305-1.654a11.882 11.882 0 005.683 1.448h.005c6.554 0 11.89-5.335 11.893-11.893a11.821 11.821 0 00-3.48-8.413Z"/></svg>
+                            Escribime por WhatsApp
+                        </a>
+                    </div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Comparison: 3-column -->
+    <section style="padding: 60px 0; background: #f8fafc;">
+        <div class="container">
+            <div style="max-width: 1080px; margin: 0 auto;">
+                <h2 style="text-align: center; font-size: 28px; font-weight: 800; margin-bottom: 8px; color: #1f2937;">¿Y si contrato a alguien para que responda?</h2>
+                <p style="text-align: center; color: #6b7280; margin-bottom: 36px; font-size: 15px;">Lo pensamos también. Esto es lo que vimos cuando hicimos los números.</p>
+                <div style="background: white; border-radius: 16px; overflow: hidden; box-shadow: 0 4px 16px rgba(0,0,0,0.06);">
+                    <table style="width: 100%; border-collapse: collapse; font-size: 14px;">
+                        <thead>
+                            <tr style="background: #f1f5f9;">
+                                <th style="padding: 18px 16px; text-align: left; font-weight: 600; color: #6b7280;"></th>
+                                <th style="padding: 18px 16px; text-align: center; font-weight: 700; color: #374151;">Recepcionista part-time</th>
+                                <th style="padding: 18px 16px; text-align: center; font-weight: 700; color: #374151;">ChatGPT + Zapier casero</th>
+                                <th style="padding: 18px 16px; text-align: center; font-weight: 800; color: #2563eb; background: #eff6ff; border-left: 2px solid #2563eb; border-right: 2px solid #2563eb; border-top: 2px solid #2563eb;">Luna (nosotros)</th>
+                            </tr>
+                        </thead>
+                        <tbody>
+                            <tr style="border-top: 1px solid #f1f5f9;">
+                                <td style="padding: 14px 16px; font-weight: 600; color: #1f2937;">Costo mensual</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">~$280.000 + aguinaldo + vacaciones</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">~$25.000 API + horas armándolo</td>
+                                <td style="padding: 14px 16px; text-align: center; font-weight: 700; color: #2563eb; background: #eff6ff; border-left: 2px solid #2563eb; border-right: 2px solid #2563eb;">$69.900 fijo</td>
+                            </tr>
+                            <tr style="border-top: 1px solid #f1f5f9; background: #fafafa;">
+                                <td style="padding: 14px 16px; font-weight: 600; color: #1f2937;">Horario</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">4-6 horas/día</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">Depende del que lo armó</td>
+                                <td style="padding: 14px 16px; text-align: center; font-weight: 700; color: #2563eb; background: #eff6ff; border-left: 2px solid #2563eb; border-right: 2px solid #2563eb;">24/7</td>
+                            </tr>
+                            <tr style="border-top: 1px solid #f1f5f9;">
+                                <td style="padding: 14px 16px; font-weight: 600; color: #1f2937;">Responde en</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">5-30 min</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">10-30 seg</td>
+                                <td style="padding: 14px 16px; text-align: center; font-weight: 700; color: #2563eb; background: #eff6ff; border-left: 2px solid #2563eb; border-right: 2px solid #2563eb;">2-5 seg</td>
+                            </tr>
+                            <tr style="border-top: 1px solid #f1f5f9; background: #fafafa;">
+                                <td style="padding: 14px 16px; font-weight: 600; color: #1f2937;">Sabe de tu hotel</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">Hay que entrenarla</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">Hay que cargar todo manual</td>
+                                <td style="padding: 14px 16px; text-align: center; font-weight: 700; color: #2563eb; background: #eff6ff; border-left: 2px solid #2563eb; border-right: 2px solid #2563eb;">Onboarding incluido</td>
+                            </tr>
+                            <tr style="border-top: 1px solid #f1f5f9;">
+                                <td style="padding: 14px 16px; font-weight: 600; color: #1f2937;">Si falla</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">Faltó, se enfermó</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">Se rompe un webhook</td>
+                                <td style="padding: 14px 16px; text-align: center; font-weight: 700; color: #2563eb; background: #eff6ff; border-left: 2px solid #2563eb; border-right: 2px solid #2563eb;">Soporte directo con nosotros</td>
+                            </tr>
+                            <tr style="border-top: 1px solid #f1f5f9; background: #fafafa;">
+                                <td style="padding: 14px 16px; font-weight: 600; color: #1f2937;">Cotiza y reserva</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">Sí, si sabe</td>
+                                <td style="padding: 14px 16px; text-align: center; color: #6b7280;">Complicado</td>
+                                <td style="padding: 14px 16px; text-align: center; font-weight: 700; color: #2563eb; background: #eff6ff; border-left: 2px solid #2563eb; border-right: 2px solid #2563eb; border-bottom: 2px solid #2563eb;">Sí, nativo</td>
+                            </tr>
+                        </tbody>
+                    </table>
+                </div>
+                <p style="text-align: center; margin-top: 18px; font-size: 13px; color: #6b7280; font-style: italic;">No decimos que Luna reemplaza a tu equipo humano. Decimos que cubre las 18 horas del día que tu equipo no está.</p>
+            </div>
+        </div>
+    </section>
+
+    <style>
+        @media (max-width: 768px) {
+            .founder-grid { grid-template-columns: 1fr !important; gap: 24px !important; }
+        }
+    </style>
+
+    <!-- Pricing Section -->
+    <section class="pricing" id="pricing">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Planes simples y justos</h2>
+                <p class="section-subtitle">Sin sorpresas. Escalá cuando crezcas.</p>
+            </div>
+
+            <div class="pricing-grid">
+                <div class="pricing-card reveal">
+                    <div class="pricing-name">Inicial</div>
+                    <div class="pricing-desc">Para hoteles pequeños que quieren empezar</div>
+                    <div class="pricing-price">$35.000<span style="font-size: 18px; color: #6b7280;">/mes</span></div>
+                    <div class="pricing-period">Facturación mensual</div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Hasta 30 consultas/día</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Chat 24/7 WhatsApp</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Gestión de reservas básica</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Dashboard simple</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Email support</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="pricing-cta secondary">Empezar ahora</a>
+                    <div class="pricing-tagline">Sin tarjeta requerida</div>
+                    <div class="pricing-guarantee-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 30 días de prueba sin riesgo</div>
+                </div>
+
+                <div class="pricing-card featured reveal">
+                    <div class="pricing-badge">Más Popular</div>
+                    <div class="pricing-name">Crecimiento</div>
+                    <div class="pricing-desc">Para hoteles en crecimiento activo</div>
+                    <div class="pricing-price"><span class="pricing-strike">$87.000</span>$69.900<span style="font-size: 18px; color: #6b7280;">/mes</span></div>
+                    <div class="pricing-savings">Ahorrás $17.100/mes vs anterior</div>
+                    <div class="pricing-period">Facturación mensual</div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Hasta 100 consultas/día</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Chat inteligente 24/7</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Gestión completa de reservas</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Integración MercadoPago</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Dashboard avanzado</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Soporte prioritario</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="pricing-cta primary">Empezar ahora</a>
+                    <div class="pricing-tagline">La opción más elegida</div>
+                    <div class="pricing-guarantee-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 30 días de prueba sin riesgo</div>
+                </div>
+
+                <div class="pricing-card reveal">
+                    <div class="pricing-name">Premium</div>
+                    <div class="pricing-desc">Para cadenas y operaciones grandes</div>
+                    <div class="pricing-price"><span class="pricing-strike">$139.000</span>$109.900<span style="font-size: 18px; color: #6b7280;">/mes</span></div>
+                    <div class="pricing-period">Facturación mensual</div>
+                    <ul class="pricing-features">
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Consultas ilimitadas</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Multi-propiedad</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>API y webhooks</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Integraciones custom</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Soporte 24/7 dedicado</span>
+                        </li>
+                        <li>
+                            <svg class="pricing-check" viewBox="0 0 24 24" fill="currentColor">
+                                <path d="M9 16.17L4.83 12l-1.42 1.41L9 19 21 7l-1.41-1.41L9 16.17z"/>
+                            </svg>
+                            <span>Onboarding personalizado</span>
+                        </li>
+                    </ul>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="pricing-cta secondary">Contactar ventas</a>
+                    <div class="pricing-tagline">Solución enterprise</div>
+                    <div class="pricing-guarantee-mini"><svg width="14" height="14" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2.5"><path d="M12 22s8-4 8-10V5l-8-3-8 3v7c0 6 8 10 8 10z"/></svg> 30 días de prueba sin riesgo</div>
+                </div>
+            </div>
+
+            <div class="pricing-footer">
+                Todos los planes incluyen: 30 días de garantía, sincronización en tiempo real, backups automáticos, SSL encriptado, GDPR compliant
+            </div>
+        </div>
+    </section>
+
+    <!-- FAQ Section -->
+    <section class="faq" id="faq">
+        <div class="container">
+            <div class="section-header">
+                <h2 class="section-title">Preguntas frecuentes</h2>
+                <p class="section-subtitle">Todo lo que necesitás saber sobre Luna</p>
+            </div>
+
+            <div class="faq-content">
+                <div class="faq-item active">
+                    <div class="faq-question">
+                        <span>¿Me pueden banear el WhatsApp del hotel?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">No. Luna usa la API oficial de WhatsApp Business (Meta), la misma que usan bancos y aerolíneas. Es 100% legal y tu número nunca queda en riesgo.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Luna realmente funciona sin entrenamiento de mi parte?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">Sí. Vos solo tenés que conectar Luna a tu WhatsApp y proporcionar información básica sobre tu hotel (habitaciones, precios, servicios). Luna se encarga de todo lo demás. Nuestro equipo te acompaña en la configuración inicial.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Cuánto tarda en empezar a funcionar?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">Luna está funcionando en 48 horas o menos. Setup, entrenamiento y pruebas incluidas. La mayoría de nuestros clientes ven resultados en los primeros 5 días.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Qué sucede si Luna comete un error?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">Luna está diseñada para escalar conversaciones complejas a tu equipo. Reviás y aprovás todas las reservas antes de confirmar. Nada se pierde. Luna aprende de cada interacción y mejora constantemente.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Puedo cancelar en cualquier momento?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">Sí, sin preguntas. Pero honestamente, con la garantía de 30 días y los resultados que ven nuestros clientes, probablemente no querrás irte.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Funciona con otros canales además de WhatsApp?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">Ahora mismo Luna está optimizada para WhatsApp, que es donde está el 90% de tus clientes. Estamos trabajando en integración con otros canales para 2026.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Cuáles son los requisitos técnicos?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">Necesitás un número de WhatsApp Business. Eso es todo. Luna se integra con tu sistema existente, no reemplaza nada que ya uses.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Mis datos están seguros?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">Completamente. Usamos encriptación SSL, servidores seguros, cumplimos GDPR y hacemos backups automáticos diarios. Tus datos son tuyos y siempre privados.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Me pueden banear el WhatsApp?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">No. Luna usa la <strong>API oficial de WhatsApp Business (Meta)</strong>, la misma que usan bancos, aerolíneas y cadenas hoteleras internacionales. No es un bot casero ni usa números personales. Tu cuenta está completamente protegida y respaldada por las políticas de Meta.</div>
+                </div>
+
+                <div class="faq-item">
+                    <div class="faq-question">
+                        <span>¿Pero mi recepcionista ya hace esto?</span>
+                        <svg class="faq-icon" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                            <polyline points="6 9 12 15 18 9"/>
+                        </svg>
+                    </div>
+                    <div class="faq-answer">Tu recepcionista es genial — pero duerme, se enferma, toma vacaciones y no puede responder 15 WhatsApps a la vez a las 11 PM. Luna no reemplaza a tu equipo, lo potencia: se encarga del volumen repetitivo 24/7 para que tu gente se enfoque en lo que importa (la experiencia del huésped).</div>
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Final CTA Section -->
+    <section class="final-cta">
+        <div class="container">
+            <div class="final-cta-content">
+                <h2>Generá más reservas <span class="final-cta-highlight">hoy</span></h2>
+                <p style="color: #d1d5db; font-size: 18px; margin-bottom: 16px;">Probá Luna 30 días sin riesgo. Si no te encanta, devolución total.</p>
+
+                <!-- Urgency offer -->
+                <div style="background: rgba(255,255,255,0.08); border: 1px solid rgba(255,255,255,0.15); border-radius: 12px; padding: 20px 28px; margin-bottom: 28px; max-width: 520px; margin-left: auto; margin-right: auto; margin-bottom: 28px;">
+                    <p style="color: #fbbf24; font-weight: 700; font-size: 14px; margin-bottom: 8px; letter-spacing: 0.5px;">OFERTA EARLY ADOPTER — ABRIL 2026</p>
+                    <p style="color: #e5e7eb; font-size: 14px; line-height: 1.6;">
+                        ✓ Setup GRATIS (valor $45.000)<br>
+                        ✓ Garantía doble: si no recuperás lo invertido, te devolvemos 2x<br>
+                        ✓ Precio congelado de por vida para los próximos 5 hoteles
+                    </p>
+                </div>
+
+                <div style="display: flex; gap: 12px; justify-content: center; flex-wrap: wrap; margin-bottom: 20px;">
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%20Luna%20para%20mi%20hotel" class="final-cta-button">Hablar con Luna Ahora</a>
+                    <a href="https://wa.me/5493541267595?text=Hola%2C%20quiero%20ver%20una%20demo%20de%2090%20segundos%20de%20Luna" style="display: inline-block; padding: 16px 32px; border: 2px solid rgba(255,255,255,0.3); color: white; border-radius: 12px; font-weight: 600; font-size: 16px; text-decoration: none; transition: all 0.3s;">Ver demo de 90 segundos</a>
+                </div>
+
+                <div class="final-cta-trust">
+                    ✓ Sin tarjeta de crédito · ✓ Garantía 30 días · ✓ Soporte incluido
+                </div>
+            </div>
+        </div>
+    </section>
+
+    <!-- Footer -->
+    <footer style="background: #111827; padding: 40px 0; border-top: 1px solid #1f2937;">
+        <div class="container">
+            <div style="display: flex; justify-content: space-between; align-items: center; flex-wrap: wrap; gap: 20px;">
+                <div>
+                    <div style="font-weight: 700; color: white; font-size: 16px;">GPT Works</div>
+                    <div style="color: #6b7280; font-size: 13px; margin-top: 4px;">Luna Operativa — IA para hoteles argentinos</div>
+                </div>
+                <div style="display: flex; gap: 24px; align-items: center;">
+                    <a href="#features" style="color: #9ca3af; text-decoration: none; font-size: 13px;">Características</a>
+                    <a href="#pricing" style="color: #9ca3af; text-decoration: none; font-size: 13px;">Precios</a>
+                    <a href="#faq" style="color: #9ca3af; text-decoration: none; font-size: 13px;">FAQ</a>
+                    <a href="#caso" style="color: #9ca3af; text-decoration: none; font-size: 13px;">Caso real</a>
+                </div>
+            </div>
+            <div style="border-top: 1px solid #1f2937; margin-top: 24px; padding-top: 24px; text-align: center; color: #6b7280; font-size: 12px;">
+                © 2026 GPT Works. Córdoba, Argentina.
+            </div>
+        </div>
+    </footer>
+
+</body>
+</html>
+  

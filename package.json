@@ -1,0 +1,15 @@
+{
+  "name": "gptworks-landing",
+  "version": "1.0.0",
+  "description": "GPT Works - Luna Operativa | Landing Page",
+  "scripts": {
+    "start": "node server.js"
+  },
+  "dependencies": {
+    "express": "^4.21.0",
+    "compression": "^1.7.5"
+  },
+  "engines": {
+    "node": ">=18.0.0"
+  }
+}
